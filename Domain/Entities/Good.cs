@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities
 {
     public class Good
     {
+        [BsonId]
         public long Id { get; set; }
         public string Title { get; set; }
         public bool Availability { get; set; }

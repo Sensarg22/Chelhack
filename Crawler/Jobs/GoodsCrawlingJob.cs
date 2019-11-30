@@ -41,10 +41,9 @@ namespace Crawler.Jobs
                 var goods = goodsResult.Data.Select(ToGood).ToList();
 
                 var actualIds = goods.Select(x => x.Id).ToList();
-                var existingGoods = _database.GetCollection<Good>(nameof(Good))
-                    .AsQueryable()
-                    .Where(x => actualIds.Contains(x.Id))
-                    .Select(x => new {x.Id, x.Hash})
+                var existingGoods = _goodsCollection
+                    .Find(Builders<Good>.Filter.In(x => x.Id, actualIds))
+                    .Project(x => new {x.Id, x.Hash})
                     .ToList();
 
                 var toInsert = new List<Good>();
