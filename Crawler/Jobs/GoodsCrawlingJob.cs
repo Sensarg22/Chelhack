@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
+using Common;
 using Domain;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Quartz;
 
 namespace Crawler.Jobs
@@ -20,39 +18,33 @@ namespace Crawler.Jobs
     public class GoodsCrawlingJob : IJob
     {
         private readonly IMongoDatabase _database;
-        private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly JsonStreamHttpClient _streamHttpClient;
         private readonly IMongoCollection<Good> _goodsCollection;
         
         private const int ChunkSize = 5;
 
-        public GoodsCrawlingJob(IHttpClientFactory httpClientFactory, IMongoDatabase database,
-            IConfiguration configuration)
+        public GoodsCrawlingJob(IMongoDatabase database, IConfiguration configuration, 
+            JsonStreamHttpClient streamHttpClient)
         {
             _database = database;
             _configuration = configuration;
+            _streamHttpClient = streamHttpClient;
             _goodsCollection = database.GetCollection<Good>(nameof(Good));
-            _httpClient = httpClientFactory.CreateClient(Constants.GoodsHttpClientName);
         }
         
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                var result = await _httpClient.GetAsync(_configuration[Constants.GoodsSourceGoods]);
-                result.EnsureSuccessStatusCode();
-                var rawResult = await result.Content.ReadAsStringAsync();
-                var goodsResult = JsonConvert.DeserializeObject<RawGoodResult>(rawResult, new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+                var goodsResult = await _streamHttpClient.GetFromJsonStreamAsync<RawGoodResult>(_configuration[Constants.GoodsSourceGoods]);
                 var goods = goodsResult.Data.Select(ToGood).ToList();
 
                 var actualIds = goods.Select(x => x.Id).ToList();
-                var existingGoods = _goodsCollection
+                var existingGoods = _database.GetCollection<Good>(nameof(Good))
                     .AsQueryable()
                     .Where(x => actualIds.Contains(x.Id))
-                    .Select(x => new {Id = x.Id, Hash = x.Hash})
+                    .Select(x => new {x.Id, x.Hash})
                     .ToList();
 
                 var toInsert = new List<Good>();
@@ -82,7 +74,7 @@ namespace Crawler.Jobs
                 if (toInsert.Any())
                 {
                     await InsertGoodsAsync(toInsert);
-                    await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
+                    //await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
                 }
                 
                 await DeleteNonExistingGoods(actualIds);

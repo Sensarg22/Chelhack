@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Common;
 using Crawler.Jobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,8 +52,8 @@ namespace Crawler
             AddJobs(hostContext.Configuration, services);
 
             services.AddHostedService<JobHost>();
-            
-            services.AddHttpClient(Constants.GoodsHttpClientName, (provider, client) =>
+
+            services.AddHttpClient<JsonStreamHttpClient>((provider, client) =>
             {
                 var configuration = provider.GetService<IConfiguration>();
                 client.BaseAddress = new Uri(configuration[Constants.GoodsSourceBase]);
