@@ -55,7 +55,7 @@ namespace Crawler
             services.AddHttpClient(Constants.GoodsHttpClientName, (provider, client) =>
             {
                 var configuration = provider.GetService<IConfiguration>();
-                client.BaseAddress = new Uri(configuration["GoodsApi"]);
+                client.BaseAddress = new Uri(configuration[Constants.GoodsSourceBase]);
             });
 
             services.AddTransient(serviceProvider =>

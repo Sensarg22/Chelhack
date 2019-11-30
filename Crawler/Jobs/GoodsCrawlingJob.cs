@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -17,10 +20,14 @@ namespace Crawler.Jobs
     {
         private readonly IMongoDatabase _database;
         private readonly HttpClient _httpClient;
+        private const int chunkSize = 5;
+        private readonly IConfiguration _configuration;
 
-        public GoodsCrawlingJob(IHttpClientFactory httpClientFactory, IMongoDatabase database)
+        public GoodsCrawlingJob(IHttpClientFactory httpClientFactory, IMongoDatabase database,
+            IConfiguration configuration)
         {
             _database = database;
+            _configuration = configuration;
             _httpClient = httpClientFactory.CreateClient(Constants.GoodsHttpClientName);
         }
         
@@ -28,7 +35,7 @@ namespace Crawler.Jobs
         {
             try
             {
-                var result = await _httpClient.GetAsync(string.Empty);
+                var result = await _httpClient.GetAsync(_configuration[Constants.GoodsSourceGoods]);
                 result.EnsureSuccessStatusCode();
                 var rawResult = await result.Content.ReadAsStringAsync();
                 var goodsResult = JsonConvert.DeserializeObject<RawGoodResult>(rawResult, new JsonSerializerSettings
@@ -96,6 +103,7 @@ namespace Crawler.Jobs
                 if (toInsert.Any())
                 {
                     await InsertGoodsAsync(toInsert);
+                    await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
                 }
 
                 if (toDelete.Any())
@@ -107,6 +115,47 @@ namespace Crawler.Jobs
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private async Task DownloadPictures(IList<string> urls)
+        {
+            int skip = 0;
+            int count;
+            do
+            {
+                var urlsChunk = urls.Skip(skip).Take(chunkSize).ToList();
+
+                if (urlsChunk.Any())
+                {
+                    var tasks = urlsChunk.Select(x =>
+                        {
+                            var absoluteUrl = new Uri(_configuration[Constants.GoodsSourceBase]+ x);
+                            var fName = Path.GetFileName(x);
+                            var fullFileName = Path.Combine(@"/Users/axel/Dev/Chelhack/ChelHackWeb/images/", fName);
+                            if (File.Exists(fullFileName))
+                            {
+                                File.Delete(fullFileName);
+                            }
+                            return new WebClient().DownloadFileTaskAsync(absoluteUrl, fullFileName);
+                        }
+                    );
+                    
+                    try
+                    {
+                        await Task.WhenAll(tasks);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+                
+                skip = skip + urlsChunk.Count;
+                count = urlsChunk.Count;
+            } while (count >= chunkSize);
+            
+            
+            throw new NotImplementedException();
         }
 
         private async Task DeleteGoods(List<long> toDelete)
