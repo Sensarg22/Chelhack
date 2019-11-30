@@ -167,6 +167,7 @@ PublishScripts/
 csx/
 *.build.csdef
 
+
 # Microsoft Azure Emulator
 ecf/
 rcf/
@@ -259,3 +260,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+**/*.Development.json
