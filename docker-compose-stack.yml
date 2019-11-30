@@ -1,14 +1,24 @@
-version: '3.4'
+version: '3.7'
 
 services:
   crawler:
     image: ${DOCKER_REGISTRY-}crawler
-    build:
-      context: .
-      dockerfile: Crawler/Dockerfile
-
+    restart: always
   chelhackweb:
     image: ${DOCKER_REGISTRY-}chelhackweb
-    build:
-      context: .
-      dockerfile: ChelHackWeb/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=443
+    ports:
+      - "80:80" 
+      - "443:443" 
+    restart: always
+  chalhackapi:
+    image: ${DOCKER_REGISTRY-}chelhackapi
+    environment:
+      - ASPNETCORE_URLS=https://+:4431;http://+:80
+      - ASPNETCORE_HTTPS_PORT=4431
+    ports:
+      - "81:80" 
+      - "4431:443" 
+    restart: always
