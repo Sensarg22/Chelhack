@@ -32,7 +32,7 @@ steps:
     set -x
     sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     docker-compose -v
-    docker-compose -f $(wDir)/docker-compose.build.yml build --parallel --build-arg VERSION=$(ver)
+    docker-compose -f $(wDir)/docker-compose.yml build --parallel --build-arg VERSION=$(ver)
   name: docker_build
   env:
     DOCKER_REGISTRY: $(acrUrl)/
@@ -40,7 +40,7 @@ steps:
 - script: |
     set -e
     set -x
-    docker-compose -f $(wDir)/docker-compose.build.yml push
+    docker-compose -f $(wDir)/docker-compose.yml push
   name: docker_push
   env:
     DOCKER_REGISTRY: $(acrUrl)/
