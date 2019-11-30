@@ -113,7 +113,7 @@ namespace Crawler.Jobs
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -131,7 +131,7 @@ namespace Crawler.Jobs
                         {
                             var absoluteUrl = new Uri(_configuration[Constants.GoodsSourceBase]+ x);
                             var fName = Path.GetFileName(x);
-                            var fullFileName = Path.Combine(@"/Users/axel/Dev/Chelhack/ChelHackWeb/images/", fName);
+                            var fullFileName = Path.Combine(_configuration[Constants.ImagesDirectory], fName);
                             if (File.Exists(fullFileName))
                             {
                                 File.Delete(fullFileName);
@@ -176,7 +176,8 @@ namespace Crawler.Jobs
 
             var models = new WriteModel<Good>[items.Count];
                 
-            for (var i = 0; i < items.Count; i++){
+            for (var i = 0; i < items.Count; i++)
+            {
                 models[i] = new ReplaceOneModel<Good>(Builders<Good>.Filter.Eq(x => x.Id, items[i].Id), items[i])
                 {
                     IsUpsert = true

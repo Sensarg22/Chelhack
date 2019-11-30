@@ -6,5 +6,6 @@ namespace Crawler
         public const string GoodsSourceBase = "GoodsApiBase";
         public const string GoodsSourceGoods = "GoodsApi";
         public const string GoodsHttpClientName = "GoodsClient";
+        public const string ImagesDirectory = "ImagesDirectory";
     }
 }
