@@ -1,0 +1,71 @@
+.gallery-v1 .gallery__list {
+			display: flex;
+			flex-wrap: wrap ;
+			margin: 0 0 -30px -30px;
+}
+
+		.gallery-v1 .gallery__item {
+			background: #fff;
+			position: relative;
+			width: calc((100% - 30px * 4) / 4);
+			margin: 0 0 30px 30px;
+}
+
+		.gallery-v1 .gallery__item img {
+				display: block;
+}
+
+		.gallery-v1 .gallery__item:hover .gallery__item-info {
+					opacity: 1;
+}
+
+		.gallery-v1 .gallery__item-img {
+				position: relative;
+}
+
+		.gallery-v1 .gallery__item-info {
+				opacity: 0;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: var(--main-color);
+				background: var(--main-color);
+				color: #fff;
+				padding: 35px 38px;
+				transition: opacity .3s ease;
+}
+
+		.gallery-v1 .gallery__item-info-title {
+					margin-bottom: 15px;
+					font-size: 1.125rem;
+}
+
+		.gallery-v1 .gallery__item-info-text {
+					font-size: 0.875rem;
+}
+
+		.gallery-v1 .gallery__item-info-btn {
+					display: block;
+					right: 30px;
+					bottom: 30px;
+					width: 43px;
+					height: 43px;
+					border-radius: 50%;
+					background: url('../img/ico-arrow.png') no-repeat center, #f8f9fb;
+					position: absolute;
+					right: 1.4rem;
+					bottom: 1.4rem;
+}
+
+@media screen and (max-width: 1200px) {
+			.gallery-v1 .gallery__item {
+				width: calc((100% - 30px * 3) / 3);
+	}
+
+				.gallery-v1 .gallery__item img {
+					width: 100%;
+	}
+}
+/*# sourceMappingURL=gallery-v1.css.map */
