@@ -65,6 +65,12 @@ namespace Crawler.Jobs
 
                 var toInsert = new List<Good>();
                 var toUpdate = new List<Good>();
+                var toDelete = _database.GetCollection<Good>(nameof(Good))
+                    .AsQueryable()
+                    .Where(x => !actualIds.Contains(x.Id))
+                    .Select(x => x.Id)
+                    .ToList();
+                
                 foreach (var good in goods)
                 {
                     CalculateHash(good);
@@ -91,11 +97,22 @@ namespace Crawler.Jobs
                 {
                     await InsertGoodsAsync(toInsert);
                 }
+
+                if (toDelete.Any())
+                {
+                    await DeleteGoods(toDelete);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private async Task DeleteGoods(List<long> toDelete)
+        {
+            var collection = _database.GetCollection<Good>(nameof(Good));
+            await collection.DeleteManyAsync(Builders<Good>.Filter.In(x => x.Id, toDelete));
         }
 
         private async Task InsertGoodsAsync(IReadOnlyCollection<Good> items)
