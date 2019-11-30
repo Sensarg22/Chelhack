@@ -18,8 +18,8 @@ services:
     container_name: chelhack_crawler
     image: ${DOCKER_REGISTRY-}crawler
     restart: always
- #   volumes:
- #     - images:/app/images
+    volumes:
+      - images:/app/images
     networks:
       - chelhack-net
     deploy:
@@ -35,12 +35,12 @@ services:
       - ASPNETCORE_HTTPS_PORT=443
     ports:
       - "80:80"
-#    volumes:
-#      - images:/app/wwwroot/images:ro
+    volumes:
+      - images:/app/wwwroot/images:ro
     networks:
       - chelhack-net
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: on-failure
 
@@ -55,6 +55,6 @@ services:
     networks:
       - chelhack-net
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
