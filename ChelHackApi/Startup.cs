@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 
 namespace ChelHackApi
 {
@@ -26,6 +28,13 @@ namespace ChelHackApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            services.AddTransient(serviceProvider =>
+            {
+                var configuration = serviceProvider.GetService<IConfiguration>();
+                var connectionString = new ConnectionString(configuration.GetConnectionString("GoodsDatabase"));
+                return new MongoClient(connectionString.ToString()).GetDatabase(connectionString.DatabaseName);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
