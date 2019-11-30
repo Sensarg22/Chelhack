@@ -1,24 +1,60 @@
 version: '3.7'
 
+networks:
+  chelhack-net:
+    driver: overlay
+
+volumes:
+  dbdata:
+  images:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH-/home/vmadmin}/images
+      o: bind
+
 services:
   crawler:
+    container_name: chelhack_crawler
     image: ${DOCKER_REGISTRY-}crawler
     restart: always
+ #   volumes:
+ #     - images:/app/images
+    networks:
+      - chelhack-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
   chelhackweb:
+    container_name: chelhack_web
     image: ${DOCKER_REGISTRY-}chelhackweb
     environment:
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTPS_PORT=443
     ports:
-      - "80:80" 
-      - "443:443" 
-    restart: always
+      - "80:80"
+#    volumes:
+#      - images:/app/wwwroot/images:ro
+    networks:
+      - chelhack-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
   chalhackapi:
+    container_name: chelhack_api
     image: ${DOCKER_REGISTRY-}chelhackapi
     environment:
-      - ASPNETCORE_URLS=https://+:4431;http://+:80
+      - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTPS_PORT=4431
     ports:
-      - "81:80" 
-      - "4431:443" 
-    restart: always
+      - "81:80"
+    networks:
+      - chelhack-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
