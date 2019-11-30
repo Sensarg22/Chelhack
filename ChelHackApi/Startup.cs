@@ -43,6 +43,14 @@ namespace ChelHackApi
 
             //app.UseHttpsRedirection();
             app.UseMvc();
+            
+            
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .WithMethods("GET", "POST")
+                .AllowAnyOrigin()
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+            );
         }
     }
 }

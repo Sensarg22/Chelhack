@@ -1,5 +1,8 @@
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Quartz;
 
 namespace Crawler.Jobs
@@ -7,15 +10,29 @@ namespace Crawler.Jobs
     [DisallowConcurrentExecution]
     public class GoodsCrawlingJob : IJob
     {
-        public GoodsCrawlingJob()
+        private HttpClient _httpClient;
+
+        public GoodsCrawlingJob(IHttpClientFactory httpClientFactory)
         {
-            
+            _httpClient = httpClientFactory.CreateClient(Constants.GoodsHttpClientName);
         }
         
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
-            
-            return Task.CompletedTask;
+            try
+            {
+                var result = await _httpClient.GetAsync(string.Empty);
+                result.EnsureSuccessStatusCode();
+                var rawResult = await result.Content.ReadAsStringAsync();
+                var goods = JsonConvert.DeserializeObject<RawGoodResult>(rawResult, new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

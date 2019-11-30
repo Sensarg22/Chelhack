@@ -49,6 +49,12 @@ namespace Crawler
             AddJobs(hostContext.Configuration, services);
 
             services.AddHostedService<JobHost>();
+            
+            services.AddHttpClient(Constants.GoodsHttpClientName, (provider, client) =>
+            {
+                var configuration = provider.GetService<IConfiguration>();
+                client.BaseAddress = new Uri(configuration["GoodsApi"]);
+            });
         }
 
         private static void AddJobs(IConfiguration configuration, IServiceCollection services)
