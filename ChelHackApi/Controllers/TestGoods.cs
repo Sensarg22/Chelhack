@@ -12,16 +12,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -47,16 +39,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -82,16 +66,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -117,16 +93,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -152,16 +120,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -187,16 +147,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -222,16 +174,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -257,16 +201,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -292,16 +228,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {
@@ -327,16 +255,8 @@ namespace ChelHackApi.Controllers
                 {
                     Id = 2353453,
                     Availability = true,
-                    Brand = new Brand
-                    {
-                        Id = 3242,
-                        Name = "Test Brand"
-                    },
-                    Category = new Category
-                    {
-                        Id = 563546,
-                        Name = "Test category"
-                    },
+                    Brand = "Test Brand",
+                    Category = "Test category",
                     Hash = Guid.NewGuid().ToString(),
                     Parameters = new List<Parameter>
                     {

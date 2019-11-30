@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
@@ -54,6 +56,13 @@ namespace Crawler
             {
                 var configuration = provider.GetService<IConfiguration>();
                 client.BaseAddress = new Uri(configuration["GoodsApi"]);
+            });
+
+            services.AddTransient(serviceProvider =>
+            {
+                var configuration = serviceProvider.GetService<IConfiguration>();
+                var connectionString = new ConnectionString(configuration.GetConnectionString(Constants.GoodsDatabase));
+                return new MongoClient(connectionString.ToString()).GetDatabase(connectionString.DatabaseName);
             });
         }
 

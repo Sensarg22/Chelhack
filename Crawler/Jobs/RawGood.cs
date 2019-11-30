@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Crawler.Jobs
 {
@@ -23,5 +24,14 @@ namespace Crawler.Jobs
         public int Quantity { get; set; }
         public string ImageUrl { get; set; }
         public List<RawParameter> Parameters { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Title}, {Availability}, " +
+                   $"{Price}, {FinalPrice}, " +
+                   $"{AvailableInDays}, {Quantity}, " +
+                   $"{ImageUrl}, {Brand}, " +
+                   $"{Category}, {string.Join(",",Parameters.Select(x => x.ToString()))}";
+        }
     }
 }
