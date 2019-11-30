@@ -13,6 +13,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChelHackApi", "ChelHackApi\ChelHackApi.csproj", "{A04087B6-2A00-4F31-B357-A097688CF1BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{406C646B-1FE4-4698-89FF-4349E84DEC5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{A04087B6-2A00-4F31-B357-A097688CF1BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A04087B6-2A00-4F31-B357-A097688CF1BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A04087B6-2A00-4F31-B357-A097688CF1BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{406C646B-1FE4-4698-89FF-4349E84DEC5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{406C646B-1FE4-4698-89FF-4349E84DEC5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{406C646B-1FE4-4698-89FF-4349E84DEC5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{406C646B-1FE4-4698-89FF-4349E84DEC5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
