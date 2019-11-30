@@ -24,7 +24,7 @@ namespace Crawler.Jobs
         private readonly IConfiguration _configuration;
         private readonly IMongoCollection<Good> _goodsCollection;
         
-        private const int chunkSize = 5;
+        private const int ChunkSize = 5;
 
         public GoodsCrawlingJob(IHttpClientFactory httpClientFactory, IMongoDatabase database,
             IConfiguration configuration)
@@ -46,26 +46,7 @@ namespace Crawler.Jobs
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
-                var goods = goodsResult.Data.Select(x => new Good
-                {
-                    Id = x.Id,
-                    Availability = x.Availability,
-                    Brand = x.Brand,
-                    Category = x.Category,
-                    Price = x.Price,
-                    Quantity = x.Quantity,
-                    Title = x.Title,
-                    BrandId = x.BrandId,
-                    FinalPrice = x.FinalPrice,
-                    ImageUrl = x.ImageUrl,
-                    AvailableInDays = x.AvailableInDays,
-                    Parameters = x.Parameters.Select(y => new Parameter
-                    {
-                        Title = y.Title,
-                        Value = y.Value
-                    }).ToList()
-                }).ToList();
-
+                var goods = goodsResult.Data.Select(ToGood).ToList();
 
                 var actualIds = goods.Select(x => x.Id).ToList();
                 var existingGoods = _goodsCollection
@@ -76,12 +57,6 @@ namespace Crawler.Jobs
 
                 var toInsert = new List<Good>();
                 var toUpdate = new List<Good>();
-                var toDelete = _goodsCollection
-                    .AsQueryable()
-                    .Where(x => !actualIds.Contains(x.Id))
-                    .Select(x => x.Id)
-                    .ToList();
-                
                 foreach (var good in goods)
                 {
                     CalculateHash(good);
@@ -109,16 +84,36 @@ namespace Crawler.Jobs
                     await InsertGoodsAsync(toInsert);
                     await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
                 }
-
-                if (toDelete.Any())
-                {
-                    await DeleteGoods(toDelete);
-                }
+                
+                await DeleteNonExistingGoods(actualIds);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        private static Good ToGood(RawGoodModel rawGoodModel)
+        {
+            return new Good
+            {
+                Id = rawGoodModel.Id,
+                Availability = rawGoodModel.Availability,
+                Brand = rawGoodModel.Brand,
+                Category = rawGoodModel.Category,
+                Price = rawGoodModel.Price,
+                Quantity = rawGoodModel.Quantity,
+                Title = rawGoodModel.Title,
+                BrandId = rawGoodModel.BrandId,
+                FinalPrice = rawGoodModel.FinalPrice,
+                ImageUrl = rawGoodModel.ImageUrl,
+                AvailableInDays = rawGoodModel.AvailableInDays,
+                Parameters = rawGoodModel.Parameters.Select(y => new Parameter
+                {
+                    Title = y.Title,
+                    Value = y.Value
+                }).ToList()
+            };
         }
 
         private async Task DownloadPictures(IList<string> urls)
@@ -127,7 +122,7 @@ namespace Crawler.Jobs
             int count;
             do
             {
-                var urlsChunk = urls.Skip(skip).Take(chunkSize).ToList();
+                var urlsChunk = urls.Skip(skip).Take(ChunkSize).ToList();
 
                 if (urlsChunk.Any())
                 {
@@ -156,12 +151,12 @@ namespace Crawler.Jobs
                 
                 skip = skip + urlsChunk.Count;
                 count = urlsChunk.Count;
-            } while (count >= chunkSize);
+            } while (count >= ChunkSize);
         }
 
-        private async Task DeleteGoods(List<long> toDelete)
+        private async Task DeleteNonExistingGoods(List<long> actualItemIds)
         {
-            await _goodsCollection.DeleteManyAsync(Builders<Good>.Filter.In(x => x.Id, toDelete));
+            await _goodsCollection.DeleteManyAsync(Builders<Good>.Filter.Nin(x => x.Id, actualItemIds));
         }
 
         private async Task InsertGoodsAsync(IReadOnlyCollection<Good> items)
