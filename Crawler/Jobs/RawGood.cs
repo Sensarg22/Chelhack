@@ -2,6 +2,13 @@ using System.Collections.Generic;
 
 namespace Crawler.Jobs
 {
+    public class RawGoodResult
+    {
+        public string Status { get; set; }
+        public string Message { get; set; }
+        public List<RawGoodModel> Data { get; set; }
+    }
+    
     public class RawGoodModel
     {
         public int Id { get; set; }
