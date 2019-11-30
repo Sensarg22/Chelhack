@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  crawler:
+    image: ${DOCKER_REGISTRY-}crawler
+    build:
+      context: .
+      dockerfile: Crawler/Dockerfile

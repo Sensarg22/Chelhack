@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChelHackWeb", "ChelHackWeb\ChelHackWeb.csproj", "{0CC0A156-4733-48AA-B8D3-DCB56E8166A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChelHackWeb", "ChelHackWeb\ChelHackWeb.csproj", "{0CC0A156-4733-48AA-B8D3-DCB56E8166A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{68F3BDDC-F9AB-41CF-A763-4F55674EA916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler", "Crawler\Crawler.csproj", "{E82AA850-81AD-4E3F-A29C-C9BC73FDA713}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler", "Crawler\Crawler.csproj", "{E82AA850-81AD-4E3F-A29C-C9BC73FDA713}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E3BC72EB-158B-4490-8EE6-0D08897777D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +25,18 @@ Global
 		{E82AA850-81AD-4E3F-A29C-C9BC73FDA713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E82AA850-81AD-4E3F-A29C-C9BC73FDA713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E82AA850-81AD-4E3F-A29C-C9BC73FDA713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3BC72EB-158B-4490-8EE6-0D08897777D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3BC72EB-158B-4490-8EE6-0D08897777D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3BC72EB-158B-4490-8EE6-0D08897777D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3BC72EB-158B-4490-8EE6-0D08897777D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {12CF6A5D-7C5B-4226-B3C6-576086672833}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E82AA850-81AD-4E3F-A29C-C9BC73FDA713} = {68F3BDDC-F9AB-41CF-A763-4F55674EA916}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12CF6A5D-7C5B-4226-B3C6-576086672833}
 	EndGlobalSection
 EndGlobal
