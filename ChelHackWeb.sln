@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler", "Crawler\Crawler.
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E3BC72EB-158B-4490-8EE6-0D08897777D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChalHackApi", "ChalHackApi\ChalHackApi.csproj", "{A04087B6-2A00-4F31-B357-A097688CF1BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChelHackApi", "ChelHackApi\ChelHackApi.csproj", "{A04087B6-2A00-4F31-B357-A097688CF1BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
