@@ -35,7 +35,6 @@ steps:
     docker-compose -f $(wDir)/docker-compose.yml build --parallel --build-arg VERSION=$(ver)
   name: docker_build
   env:
-    DOCKER_REGISTRY: $(acrUrl)/$(dockerId) 
     TAG: $(imageTag)
 - script: |
     set -e
@@ -43,7 +42,6 @@ steps:
     docker-compose -f $(wDir)/docker-compose.yml push
   name: docker_push
   env:
-    DOCKER_REGISTRY: $(acrUrl)/$(dockerId) 
     TAG: $(imageTag)
 - script: |
     set -e
