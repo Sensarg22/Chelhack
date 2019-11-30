@@ -56,7 +56,6 @@ steps:
     echo $(imageTag) >> tag.txt
     echo $(ver) >> ver.txt
     docker-compose -f $(wDir)/docker-compose.yml config | grep 'image:' | grep 'idocr' | cut -d':' -f3 >> idocrtag.txt
-    cp -r $(wDir)/Docker/Push/ .
   name: set_vars
   workingDirectory: $(Build.ArtifactStagingDirectory)
 - task: PublishBuildArtifacts@1

@@ -1,22 +1,48 @@
 version: '3.4'
 
+networks:
+  chelhack-net:
+    driver: bridge
+
+volumes:
+  dbdata:
+  images:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH-/var}/images
+      o: bind
+
 services:
   crawler:
+    container_name: chelhack_crawler
     image: ${DOCKER_REGISTRY-}crawler
     build:
       context: .
       dockerfile: Crawler/Dockerfile
+    volumes:
+      - images:/app/images
+    networks:
+      - chelhack-net
 
   chelhackweb:
+    container_name: chelhack_web
     image: ${DOCKER_REGISTRY-}chelhackweb
     build:
       context: .
       dockerfile: ChelHackWeb/Dockerfile
+    volumes:
+      - images:/app/wwwroot/images:ro
+    networks:
+      - chelhack-net
 
 
   chalhackapi:
-    image: ${DOCKER_REGISTRY-}chalhackapi
+    container_name: chelhack_api
+    image: ${DOCKER_REGISTRY-}chelhackapi
     build:
       context: .
-      dockerfile: ChalHackApi/Dockerfile
+      dockerfile: ChelHackApi/Dockerfile
+    networks:
+      - chelhack-net
 
