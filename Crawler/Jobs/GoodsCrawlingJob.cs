@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Domain;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -20,14 +21,17 @@ namespace Crawler.Jobs
     {
         private readonly IMongoDatabase _database;
         private readonly HttpClient _httpClient;
-        private const int chunkSize = 5;
         private readonly IConfiguration _configuration;
+        private readonly IMongoCollection<Good> _goodsCollection;
+        
+        private const int chunkSize = 5;
 
         public GoodsCrawlingJob(IHttpClientFactory httpClientFactory, IMongoDatabase database,
             IConfiguration configuration)
         {
             _database = database;
             _configuration = configuration;
+            _goodsCollection = database.GetCollection<Good>(nameof(Good));
             _httpClient = httpClientFactory.CreateClient(Constants.GoodsHttpClientName);
         }
         
@@ -64,7 +68,7 @@ namespace Crawler.Jobs
 
 
                 var actualIds = goods.Select(x => x.Id).ToList();
-                var existingGoods = _database.GetCollection<Good>(nameof(Good))
+                var existingGoods = _goodsCollection
                     .AsQueryable()
                     .Where(x => actualIds.Contains(x.Id))
                     .Select(x => new {Id = x.Id, Hash = x.Hash})
@@ -72,7 +76,7 @@ namespace Crawler.Jobs
 
                 var toInsert = new List<Good>();
                 var toUpdate = new List<Good>();
-                var toDelete = _database.GetCollection<Good>(nameof(Good))
+                var toDelete = _goodsCollection
                     .AsQueryable()
                     .Where(x => !actualIds.Contains(x.Id))
                     .Select(x => x.Id)
@@ -153,38 +157,30 @@ namespace Crawler.Jobs
                 skip = skip + urlsChunk.Count;
                 count = urlsChunk.Count;
             } while (count >= chunkSize);
-            
-            
-            throw new NotImplementedException();
         }
 
         private async Task DeleteGoods(List<long> toDelete)
         {
-            var collection = _database.GetCollection<Good>(nameof(Good));
-            await collection.DeleteManyAsync(Builders<Good>.Filter.In(x => x.Id, toDelete));
+            await _goodsCollection.DeleteManyAsync(Builders<Good>.Filter.In(x => x.Id, toDelete));
         }
 
         private async Task InsertGoodsAsync(IReadOnlyCollection<Good> items)
         {
-            var collection = _database.GetCollection<Good>(nameof(Good));
-            await collection.InsertManyAsync(items);
+            await _goodsCollection.InsertManyAsync(items);
         }
 
         private async Task UpdateGoodsAsync(IReadOnlyList<Good> items)
         {
-            var collection = _database.GetCollection<Good>(nameof(Good));
-
-            var models = new WriteModel<Good>[items.Count];
-                
-            for (var i = 0; i < items.Count; i++)
+            var writeOptions = new BulkWriteOptions
             {
-                models[i] = new ReplaceOneModel<Good>(Builders<Good>.Filter.Eq(x => x.Id, items[i].Id), items[i])
-                {
-                    IsUpsert = true
-                };
+                IsOrdered = true
             };
+            var models = items.Select(x => new ReplaceOneModel<BsonDocument>(Builders<BsonDocument>.Filter.Eq("_id", x.Id), x.ToBsonDocument())
+            {
+                IsUpsert = true
+            });
 
-            await collection.BulkWriteAsync(models);
+            await _database.GetCollection<BsonDocument>(nameof(Good)).BulkWriteAsync(models, writeOptions);
         }
 
         private static void CalculateHash(Good good)
