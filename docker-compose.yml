@@ -18,5 +18,5 @@ services:
     image: ${DOCKER_REGISTRY-}chalhackapi
     build:
       context: .
-      dockerfile: ChalHackApi/Dockerfile
+      dockerfile: ChelHackApi/Dockerfile
 
