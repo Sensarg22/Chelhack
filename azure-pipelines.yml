@@ -1,0 +1,65 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+name: $(Build.SourceBranchName)-$(Date:yyMM).$(Date:dd)$(Rev:.r)
+trigger:
+- master
+resources:
+  repositories:
+  - repository: self
+    checkoutOptions:
+      submodules: true
+pool:
+  vmImage: 'ubuntu-latest'
+variables:
+  wDir: $(Build.SourcesDirectory)
+  imageTag: '$(Build.BuildNumber)'
+  ver: $[format('1.{0:yy}.{0:MMdd}.{1}', pipeline.startTime, counter(format('{0:yyyyMMdd}-{1}', pipeline.startTime, variables['Build.SourceBranchName']), 1))]
+  acrUrl: 'https://index.docker.io/v1/'
+
+steps:
+- script: |
+    set -e
+    set -x
+    docker login -u $(dockerId) -p $pswd $(acrUrl)
+    echo $(ver)
+  name: docker_login
+  env:
+    pswd: $(dockerPassword)
+- script: |
+    set -e
+    set -x
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    docker-compose -v
+    docker-compose -f $(wDir)/docker-compose.yml build --parallel --build-arg VERSION=$(ver)
+  name: docker_build
+  env:
+    DOCKER_REGISTRY: $(acrUrl)/
+    TAG: $(imageTag)
+- script: |
+    set -e
+    set -x
+    docker-compose -f $(wDir)/docker-compose.yml push
+  name: docker_push
+  env:
+    DOCKER_REGISTRY: $(acrUrl)/
+    TAG: $(imageTag)
+- script: |
+    set -e
+    set -x
+    docker logout $(acrUrl)
+  name: docker_logout
+- script: |
+    set -e
+    set -x
+    echo $(imageTag) >> tag.txt
+    echo $(ver) >> ver.txt
+    docker-compose -f $(wDir)/docker-compose.yml config | grep 'image:' | grep 'idocr' | cut -d':' -f3 >> idocrtag.txt
+    cp -r $(wDir)/Docker/Push/ .
+  name: set_vars
+  workingDirectory: $(Build.ArtifactStagingDirectory)
+- task: PublishBuildArtifacts@1
+  inputs:
+    artifactName: chelhack
+    pathtoPublish: $(Build.ArtifactStagingDirectory)
