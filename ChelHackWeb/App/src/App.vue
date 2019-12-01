@@ -13,7 +13,7 @@
                 <nav class="nav">
                   <ul class="nav__list">
                     <li class="nav__item">
-                      <router-link class="nav__link" :to="{name: 'home'}">Каталог</router-link>
+                      <router-link class="nav__link" :to="{name: 'home'}" v-bind:class="{'nav__link--active': this.$route.name === 'home'}">Каталог</router-link>
                     </li>
 <!--                    <li class="nav__item"><a class="nav__link" href="#">Бренды</a></li>-->
 <!--                    <li class="nav__item active"><a class="nav__link" href="#">Книги</a></li>-->
@@ -22,7 +22,7 @@
 <!--                    <li class="nav__item"><a class="nav__link" href="#">Электроника</a></li>-->
 <!--                    <li class="nav__item"><a class="nav__link" href="#">Одежда и обувь</a></li>-->
                     <li class="nav__item">
-                      <router-link class="nav__link" :to="{name: 'ShopBasket'}">Корзина</router-link>
+                      <router-link class="nav__link" :to="{name: 'ShopBasket'}" v-bind:class="{'nav__link--active': this.$route.name === 'ShopBasket'}">Корзина</router-link>
                     </li>
                   </ul>
                 </nav>

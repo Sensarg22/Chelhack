@@ -140,6 +140,7 @@
                         message: 'Ваш заказ принят!',
                         type: 'success'
                     });
+                    this.clear()
                     this.loading = false
                 }).catch(() => {
                     this.loading = false
