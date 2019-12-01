@@ -106,7 +106,7 @@
                     <div class="cards">
 
                         <router-link :key="key" class=" card" href="#" v-for="(item,key) in list"
-                                     :to="{name:'Product', params: {id: item.id}}" style="width: 18rem; ">
+                                     :to="{name:'Product', params: {id: item.id}}" style="width: 21rem; ">
                             <div class="card-img">
                                 <img :src="item.imageUrl" class="card-img-top" alt="... ">
                             </div>
