@@ -1,0 +1,152 @@
+section#card{
+	padding-top: 30px;
+	background: url("../img/background.gif");
+	background-repeat: repeat;
+}
+
+h4#card {
+    font-size: 30pt;
+    line-height: 1;
+}
+p#dicr{
+	color: #ccc;
+	line-height: 1;
+}
+.img_box {
+    border-radius: 10px;
+    background: #fff;
+    margin: auto;
+    border-right: solid 1px #ccc;
+    padding: 30px;
+}
+
+.img_card_item {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    max-width: 200px;
+    display: block;
+    margin: auto;
+}
+
+.box_text_card{
+	color: #fff;
+	padding: 30px;
+
+}
+
+#old_price {
+    font-size: 36pt;
+    padding: 10px 20px;
+    font-weight: 600;
+    border: solid 1px;
+    border-radius: 4px;
+    display: inline-block;
+}
+.old_price {
+    font-size: 36pt;
+    padding: 10px 20px;
+    font-weight: 600;
+    border: solid 1px;
+    border-radius: 4px;
+    display: inline-block;
+}
+.d24 {
+    transform: rotate(-70deg);
+    background: #f31414;
+    height: 231px;
+    width: 4px;
+    display: block;
+    position: absolute;
+    left: 159px;
+    top: 42px;
+}
+
+#discount_price {
+    font-size: 19pt;
+    color: #ccc;
+    margin-top: 20px;
+    padding-left: 15px;
+}
+
+.box-main-price{
+	cursor: pointer;
+}
+.box-main-price a#main_price:hover{
+	transition: 0.5s;
+	box-shadow: 0 0 16px 2px rgba(202, 23, 23, 0.57);
+}
+
+	
+.box-main-price:before {
+    display: block;
+    content: '';
+    border-right: 45px solid rgba(255,255,255,0);
+    border-bottom: 72px solid #f5ca16;
+    position: absolute;
+    right: 253px;
+}
+a#main_price {
+	text-decoration: none;
+    background: #f5ca16;
+    padding: 4px 20px;
+    font-size: 36pt;
+    font-weight: 600;
+    color: black;
+}
+
+
+
+#main_price:before {
+    display: block;
+    content: '';
+    border-left: 45px solid rgba(255,255,255,0);
+    border-top: 72px solid #f5ca16;
+    position: absolute;
+    left: 0px;}
+
+/*
+    .d24 {
+background: #CD6D45;
+height: 100px; 
+width: 20px;
+position: relative; 
+left: 40px;
+}
+.d24:after {
+content: "";
+height: 20px; 
+width: 100px;
+background: #CD6D45;
+position: absolute; 
+left: -40px; 
+top: 40px;
+}
+*/
+
+
+|
+.box_charact	{
+	margin-top: 30px;
+
+}
+
+.list-group {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.head_charact{
+	font-weight: 600;
+    font-size: 14pt;
+	color: #222!important;
+	background: #fff!important;
+	border:none!important;
+}
+.border-right{
+	border-right: solid 1px #ccc;
+}
