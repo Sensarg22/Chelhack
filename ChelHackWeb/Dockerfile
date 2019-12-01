@@ -14,7 +14,7 @@ RUN dotnet build ChelHackWeb.csproj -c Release -o /app
 FROM node:10-alpine as npm
 ARG VERSION
 WORKDIR /src
-COPY --from=build "/ChelHackWeb/app" .
+COPY --from=build "/ChelHackWeb/App" .
 RUN npm install && npm run build
 
 FROM build AS publish
