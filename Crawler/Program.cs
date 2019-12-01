@@ -58,12 +58,25 @@ namespace Crawler
                 var configuration = provider.GetService<IConfiguration>();
                 client.BaseAddress = new Uri(configuration[Constants.GoodsSourceBase]);
             });
+            //var mcs = hostContext.Configuration.GetConnectionString(Constants.GoodsDatabase);
+            //var set = MongoClientSettings.FromConnectionString(mcs);
+            //try
+            //{
+            //    var q = new MongoClient(set);
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e);
+            //    throw;
+            //}
 
-            services.AddTransient(serviceProvider =>
+            //services.AddSingleton(set);
+            var mcs = hostContext.Configuration.GetConnectionString(Constants.GoodsDatabase);
+            services.AddTransient(sp=>
             {
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                var connectionString = new ConnectionString(configuration.GetConnectionString(Constants.GoodsDatabase));
-                return new MongoClient(connectionString.ToString()).GetDatabase(connectionString.DatabaseName);
+                var set = MongoClientSettings.FromConnectionString(mcs);
+                var q = new MongoClient(set);
+                return q.GetDatabase("eshop");
             });
         }
 

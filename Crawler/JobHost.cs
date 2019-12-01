@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -30,41 +31,50 @@ namespace Crawler
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
-            Scheduler.JobFactory = _jobFactory;
-
-            var triggerNowJobs = new List<JobKey>();
-
-            foreach (var jobSchedule in _jobSchedules)
+            try
             {
-                if (!string.IsNullOrEmpty(_configuration["j"]))
+                Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+                Scheduler.JobFactory = _jobFactory;
+
+                var triggerNowJobs = new List<JobKey>();
+
+                foreach (var jobSchedule in _jobSchedules)
                 {
-                    if (jobSchedule.JobType.Name == _configuration["j"] + "Job")
+                    if (!string.IsNullOrEmpty(_configuration["j"]))
+                    {
+                        if (jobSchedule.JobType.Name == _configuration["j"] + "Job")
+                        {
+                            var job = CreateJob(jobSchedule);
+                            var trigger = CreateTrigger(jobSchedule);
+                            await Scheduler.ScheduleJob(job, trigger, cancellationToken);
+                            triggerNowJobs.Add(job.Key);
+                        }
+                    }
+                    else
                     {
                         var job = CreateJob(jobSchedule);
                         var trigger = CreateTrigger(jobSchedule);
                         await Scheduler.ScheduleJob(job, trigger, cancellationToken);
-                        triggerNowJobs.Add(job.Key);
+                        if (jobSchedule.IsRunImmediately)
+                        {
+                            triggerNowJobs.Add(job.Key);
+                        }
                     }
                 }
-                else
+
+                await Scheduler.Start(cancellationToken);
+
+                foreach (var triggerNowJobKey in triggerNowJobs)
                 {
-                    var job = CreateJob(jobSchedule);
-                    var trigger = CreateTrigger(jobSchedule);
-                    await Scheduler.ScheduleJob(job, trigger, cancellationToken);
-                    if (jobSchedule.IsRunImmediately)
-                    {
-                        triggerNowJobs.Add(job.Key);
-                    }
+                    await Scheduler.TriggerJob(triggerNowJobKey, cancellationToken);
                 }
             }
-
-            await Scheduler.Start(cancellationToken);
-
-            foreach (var triggerNowJobKey in triggerNowJobs)
+            catch (Exception e)
             {
-                await Scheduler.TriggerJob(triggerNowJobKey, cancellationToken);
+                Console.WriteLine(e);
+                throw;
             }
+            
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
