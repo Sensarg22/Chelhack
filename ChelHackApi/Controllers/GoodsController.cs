@@ -3,23 +3,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace ChelHackApi.Controllers
 {
     [Route("[controller]")]
     public class GoodsController : Controller
     {
+        private readonly IMongoDatabase _mongoDatabase;
+
+        public GoodsController(IMongoDatabase mongoDatabase)
+        {
+            _mongoDatabase = mongoDatabase;
+        }
+        
         [HttpGet("")]
         public async Task<List<Good>> Goods([FromQuery] PagedFilter filter)
         {
-            var goods = TestGoods.List;
+            var collection = _mongoDatabase.GetCollection<Good>(nameof(Good));
+            var filterDefinition = FilterDefinition<Good>.Empty;
+            
             if (!string.IsNullOrEmpty(filter.TextFilter))
             {
-                goods = goods.Where(x => x.Title == filter.TextFilter).ToList();
+                filterDefinition = Builders<Good>.Filter.Text(filter.TextFilter);
             }
             
-            return goods.Skip((filter.Page == 1 ? 0 : filter.Page) * filter.PageSize)
-                .Take(filter.PageSize).ToList();
+            return await collection.Find(filterDefinition)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Limit(filter.PageSize).ToListAsync();
         }
         
         [HttpGet("{id:long:min(1)}")]
@@ -27,15 +38,5 @@ namespace ChelHackApi.Controllers
         {
             return TestGoods.List.FirstOrDefault(x => x.Id == id);
         }
-    }
-
-    public class PagedFilter
-    {
-
-        public int Page { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-        public string TextFilter { get; set; }
-        public string SortField { get; set; }
-        public string SortOrder { get; set; }
     }
 }
