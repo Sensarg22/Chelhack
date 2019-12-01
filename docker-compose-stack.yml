@@ -17,7 +17,7 @@ services:
   crawler:
     image: ${DOCKER_REGISTRY-}crawler
     environment:
-      - ConnectionStrings__GoodsDatabase="mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
+      - ConnectionStrings__GoodsDatabase=mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop
     volumes:
       - images:/app/images
     networks:
@@ -50,7 +50,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTPS_PORT=4431
-      - ConnectionStrings__GoodsDatabase="mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
+      - ConnectionStrings__GoodsDatabase=mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop
     ports:
       - "81:80"
     networks:
@@ -60,14 +60,17 @@ services:
       restart_policy:
         condition: any
   mongo:
-    image: mongo
+    image: mongo:4.0.13-xenial
     environment:
       MONGO_INITDB_DATABASE: eshop
-      MONGO_INITDB_ROOT_USERNAME: chelhack
-      MONGO_INITDB_ROOT_PASSWORD: chelhackmegapass2019
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: chelhackrootpass2019
     volumes:
       - dbdata:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/init.js
     deploy:
       replicas: 1
       restart_policy:
         condition: any
+    networks:
+      - chelhack-net

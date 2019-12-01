@@ -5,14 +5,15 @@ EXPOSE 443
 
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
-COPY ChelHackApi/ChelHackApi.csproj ChelHackApi/
-RUN dotnet restore ChelHackApi/ChelHackApi.csproj
+COPY ["ChelHackApi/ChelHackApi.csproj", "ChelHackApi/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+RUN dotnet restore "ChelHackApi/ChelHackApi.csproj"
 COPY . .
-WORKDIR /src/ChelHackApi
-RUN dotnet build ChelHackApi.csproj -c Release -o /app
+WORKDIR "/src/ChelHackApi"
+RUN dotnet build "ChelHackApi.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish ChelHackApi.csproj -c Release -o /app
+RUN dotnet publish "ChelHackApi.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app

@@ -22,6 +22,7 @@ namespace Crawler.Jobs
         private readonly JsonStreamHttpClient _streamHttpClient;
         private readonly IMongoCollection<Good> _goodsCollection;
         private readonly IMongoCollection<Brand> _brandsCollection;
+        private readonly IMongoCollection<Category> _categoriesCollection;
         
         private const int ChunkSize = 5;
 
@@ -33,6 +34,7 @@ namespace Crawler.Jobs
             _streamHttpClient = streamHttpClient;
             _goodsCollection = database.GetCollection<Good>(nameof(Good));
             _brandsCollection = database.GetCollection<Brand>(nameof(Brand));
+            _categoriesCollection = database.GetCollection<Category>(nameof(Category));
         }
         
         public async Task Execute(IJobExecutionContext context)
@@ -80,6 +82,7 @@ namespace Crawler.Jobs
                 }
 
                 await UpdateBrands(goods);
+                await UpdateCategories(goods);
                 
                 await DeleteNonExistingGoods(actualIds);
             }
@@ -171,6 +174,27 @@ namespace Crawler.Jobs
             if (brandOperations.Any())
             {
                 await _brandsCollection.BulkWriteAsync(brandOperations, writeOptions);
+            }
+        }
+        
+        private async Task UpdateCategories(IReadOnlyList<Good> items)
+        {
+            var writeOptions = new BulkWriteOptions
+            {
+                IsOrdered = true
+            };
+            var brandOperations = new List<ReplaceOneModel<Category>>();
+            brandOperations.AddRange(items.Select(x => new ReplaceOneModel<Category>(Builders<Category>.Filter.Eq(y => y.Name, x.Category),
+                new Category
+                {
+                    Name = x.Category
+                })
+            {
+                IsUpsert = true
+            }));
+            if (brandOperations.Any())
+            {
+                await _categoriesCollection.BulkWriteAsync(brandOperations, writeOptions);
             }
         }
 
