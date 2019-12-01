@@ -73,7 +73,7 @@ namespace Crawler.Jobs
                 if (toInsert.Any())
                 {
                     await InsertGoodsAsync(toInsert);
-                    //await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
+                    await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
                 }
                 
                 await DeleteNonExistingGoods(actualIds);
@@ -109,40 +109,32 @@ namespace Crawler.Jobs
 
         private async Task DownloadPictures(IList<string> urls)
         {
-            int skip = 0;
-            int count;
-            do
+            if (!Directory.Exists(_configuration[Constants.ImagesDirectory]))
             {
-                var urlsChunk = urls.Skip(skip).Take(ChunkSize).ToList();
-
-                if (urlsChunk.Any())
+                Directory.CreateDirectory(_configuration[Constants.ImagesDirectory]);
+            }
+            
+            Parallel.ForEach(urls, (url) =>
+            {
+                var absoluteUrl = new Uri(_configuration[Constants.GoodsSourceBase] + url);
+                var fName = Path.GetFileName(url);
+                var fullFileName = Path.Combine(_configuration[Constants.ImagesDirectory], fName);
+                if (File.Exists(fullFileName))
                 {
-                    var tasks = urlsChunk.Select(x =>
-                        {
-                            var absoluteUrl = new Uri(_configuration[Constants.GoodsSourceBase]+ x);
-                            var fName = Path.GetFileName(x);
-                            var fullFileName = Path.Combine(_configuration[Constants.ImagesDirectory], fName);
-                            if (File.Exists(fullFileName))
-                            {
-                                File.Delete(fullFileName);
-                            }
-                            return new WebClient().DownloadFileTaskAsync(absoluteUrl, fullFileName);
-                        }
-                    );
-                    
-                    try
-                    {
-                        await Task.WhenAll(tasks);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
+                    File.Delete(fullFileName);
                 }
-                
-                skip = skip + urlsChunk.Count;
-                count = urlsChunk.Count;
-            } while (count >= ChunkSize);
+
+                try
+                {
+                    Console.WriteLine($"DOWNLOADING {url}");
+                    new WebClient().DownloadFile(absoluteUrl, fullFileName);
+                    Console.WriteLine($"DOWNLOADED {url}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
         }
 
         private async Task DeleteNonExistingGoods(List<long> actualItemIds)
