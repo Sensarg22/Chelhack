@@ -1,4 +1,5 @@
 <template>
+    <div>
     <!--    <div class="catalog">-->
     <!--        <div class="catalog__container">-->
     <!--            <aside class="aside">-->
@@ -45,9 +46,32 @@
     <!--            </section>-->
     <!--        </div>-->
     <!--    </div>-->
+    <div class="banner">
 
-
-    <div class="slider slider-tovar" >
+        <div id="countdown" class="countdown">
+            <div class="countdown-number">
+                <span class="days countdown-time">{{days}}</span>
+                <span class="countdown-text">ДНЕЙ</span>
+            </div>
+            <div class="countdown-number">
+                <span class="hours countdown-time">{{hours}}</span>
+                <span class="countdown-text">ЧАСОВ</span>
+            </div>
+            <div class="countdown-number">
+                <span class="minutes countdown-time">{{minutes}}</span>
+                <span class="countdown-text">МИНУТ</span>
+            </div>
+            <div class="countdown-number">
+                <span class="seconds countdown-time">{{seconds}}</span>
+                <span class="countdown-text">СЕКУНД</span>
+            </div>
+        </div>
+        <img src="../assets/img/iii.jpg" alt="">
+    </div>
+        <div class="h3">Распродажа <span style="    cursor: pointer;
+    color: #000;
+    text-shadow: 1px 1px 7px #fff;"> черная </span><span style="color: #f5ca16">ПЯТНИЦА</span></div>
+    <div class="slider slider-tovar">
         <div class="wrapper" v-loading.fullscreen.lock="loading">
             <aside class="aside">
                 <div class="aside__subtitle">
@@ -74,24 +98,33 @@
                 <!--                <div class="title">-->
                 <!--                    <span>Наши товары</span>-->
                 <!--                </div>-->
-                <el-input v-model="form.textFilter" :clearable="true" @change="getGoods" class="m-b-20" :placeholder="'Поиск'">
+                <el-input v-model="form.textFilter" :clearable="true" @change="getGoods" class="m-b-20"
+                          :placeholder="'Поиск'">
 
                 </el-input>
                 <div class="slider__block">
-                    <div class="slider__block-list">
+                    <div class="cards">
 
-                        <router-link  :key="key" class="slider-block__item" href="#" v-for="(item,key) in list" :to="{name:'Product', params: {id: item.id}}">
-                            <figure class="slider-block__item-img">
-                                <img :src="item.imageUrl"/></figure>
-                            <div class="slider-block__item-info">
-                                <div class="slider-block__info-title">{{item.title}}
-                                </div>
-                                <div class="slider-block__info-dop">{{item.brand}}</div>
-                                <div class="slider-block__info-price">{{item.price}} Р</div>
-                                <div class="slider-block__info-price--sale">{{item.finalPrice}}</div>
-                                <div class="slider-block__info-btn ico-cart"></div>
+                        <router-link :key="key" class=" card" href="#" v-for="(item,key) in list"
+                                     :to="{name:'Product', params: {id: item.id}}" style="width: 18rem; ">
+                            <div class="card-img">
+                                <img :src="item.imageUrl" class="card-img-top" alt="... ">
+                            </div>
+                            <div class="card-body"><h5 class="card-title">{{item.title}}</h5>
+                                <p class="card-text">{{item.brand}} </p></div>
+                            <div class="pr">
+
+                                <p class="old-p"> {{item.price}} Р</p>
+                                <div class="new-p">
+
+                                    <div class="box-main-price">
+                                        <a href="#" id="main_price" class="main_price_item">{{item.finalPrice}} Р</a>
+                                    </div>
+                                    <p class="prr">купить</p></div>
                             </div>
                         </router-link>
+
+
                         <!--<a class="slider-block__item" href="#">
                             <figure class="slider-block__item-img"><img src="../assets/img/photos/2.jpg"/></figure>
                             <div class="slider-block__item-info">
@@ -217,21 +250,26 @@
                     <div v-if="loading === false && list.length === 0" class="m-t-40">
                         Ничего не найдено :(
                     </div>
-                  <!--  <el-row class="m-t-20">
+                    <el-row class="m-t-20" v-if="list.length !== 0">
                         <el-col align="center">
                             <el-pagination
                                     background
-                                    layout="prev, pager, next"
-                                    :page="form.page">
+                                    @current-change="handleCurrentChange"
+                                    @size-change="handleSizeChange"
+                                    :current-page.sync="form.page"
+                                    :page-sizes="[5, 10, 20, 100, 200, 300, 400]"
+                                    :page-size="form.pageSize"
+                                    layout="sizes, prev, pager, next, total"
+                                    :total="total">
                             </el-pagination>
                         </el-col>
-                    </el-row>-->
+                    </el-row>
                 </div>
             </div>
         </div>
     </div>
 
-
+    </div>
 </template>
 
 <script>
@@ -246,16 +284,30 @@
                 list: [],
                 brands: [],
                 categories: [],
+                deadline: "December 02 2019 00:00:00 GMT+0300",
+                timeinterval: null,
+                hours: 0,
+                minutes: 0,
+                seconds: 0,
+                days: 0,
+                total: 0,
                 form: {
-                    page: 1,
-                    pageSize: 10,
-                    sortField: '',
-                    sortOrder: '',
-                    textFilter: ''
+                        page: 1,
+                        pageSize: 5,
+                        sortField: '',
+                        sortOrder: '',
+                        textFilter: ''
+                    }
                 }
-            }
         },
         methods: {
+            handleSizeChange (val) {
+                this.form.pageSize = val
+                this.getGoods()
+            },
+            handleCurrentChange () {
+                this.getGoods()
+            },
             getCategories() {
                 this.loading = true
                 Api.getCategories().then(res => {
@@ -274,21 +326,51 @@
                     // this.loading = false
                 })
             },
+            getTimeRemaining () {
+                var t = Date.parse(this.deadline) - Date.parse(new Date());
+                var seconds = Math.floor((t / 1000) % 60);
+                var minutes = Math.floor((t / 1000 / 60) % 60);
+                var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+                var days = Math.floor(t / (1000 * 60 * 60 * 24));
+                return {
+                    'total': t,
+                    'days': days,
+                    'hours': hours,
+                    'minutes': minutes,
+                    'seconds': seconds
+                };
+            },
             getGoods() {
                 this.loading = true
                 Api.getGoods(this.form).then(res => {
-                    this.list = res
+                    this.list = res.items
+                    this.form.page = res.page
+                    this.total = res.total
                     this.loading = false
                 }).catch(() => {
                     this.loading = false
                 })
+            },
+             updateClock() {
+                var t = this.getTimeRemaining();
+                this.days = t.days;
+                this.hours = t.hours;
+                this.minutes = t.minutes;
+                this.seconds = t.seconds;
+                if (t.total <= 0) {
+                    clearInterval(this.timeinterval);
+                }
             }
         },
         created() {
             this.getBrands()
             this.getGoods()
             this.getCategories()
-            // this.loading = true
+            let initializeClock = (id, endtime) => {
+                this.updateClock();
+                this.timeinterval = setInterval(this.updateClock, 1000);
+            }
+            initializeClock('countdown', this.deadline)
         }
     }
 </script>

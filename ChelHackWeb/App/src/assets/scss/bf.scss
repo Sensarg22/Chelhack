@@ -1,0 +1,269 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;	}
+    a {
+    color: #fff!important;
+    font-weight: inherit;
+    text-decoration: none;
+}
+ a:hover {
+    color: #fff!important;
+    font-weight: inherit!important;
+    text-decoration: none;
+}
+#page-wr{
+
+		background: #000!important;
+}
+h3{
+	text-align: center;
+}
+.banner {
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+}
+.banner img {
+    float: right;
+
+    width: 54%;
+    /* height: 79%; */
+}
+.cards{justify-content: space-evenly;
+border: white 1px solid;
+margin: 2px;
+	display: flex;
+flex-wrap: wrap;
+}
+.card {
+    background: black;
+    margin: 20px;
+    color: white;
+    border: white 1px solid;
+    padding: 9px;
+    border-radius: 8px;
+}
+.card-img {
+    background: #fff;
+    text-align: center;
+    width: 100%;
+    border-radius: calc(.25rem - 1px);
+}
+.card img{
+    width: 150px;
+}
+.h3{
+	text-align: center;
+    color: white;
+    font-size: 48px;
+    margin: 30px;
+    font-weight: 800;
+
+}
+.card-title{
+	font-size: 28px;
+}
+.card-text{
+	font-size: 16px;
+}
+.card-img-top {
+    border-radius: 3%;
+    width: 100%;
+    /* border-top-left-radius: calc(.25rem - 1px); */
+    /* border-top-right-radius: calc(.25rem - 1px); */
+}
+.card-body{
+    margin-top: 20px;
+}
+.new-p {
+    display: inline-flex;
+    margin: 0 18px;
+    flex-direction: row;
+}
+.prr {
+    font-size: 25px;
+    font-weight: 800;
+    margin: 0 24px;
+}
+.prr:hover
+	{
+    cursor: pointer;
+    color: #f5ca16;
+    text-shadow: -1px 0px 36px #f5ca16;
+
+}
+.old-p{
+	    font-size: 27px;
+    margin: 0 20px;
+    text-decoration: line-through #f5ca16;
+}
+.corz{
+background-image: url('./assets/img/shoping.png');
+}
+.box-main-price{
+cursor: pointer;
+}
+.box-main-price a#main_price:hover{
+transition: 0.5s;
+box-shadow: 0 0 16px 2px rgba(202, 23, 23, 0.57);
+}
+
+
+a#main_price {
+    width: 128px;
+    text-decoration: none;
+    background: #f5ca16;
+    padding: 3px 7px;
+    font-size: 20pt;
+    font-weight: 500;
+    color: black!important;
+}
+
+
+
+#users{
+    background: white;
+
+}
+
+
+.countdown-title {
+  color: #396;
+  font-weight: 100;
+  font-size: 40px;
+  margin: 40px 0px 20px;
+}
+
+.countdown {
+	margin: auto;
+  font-family: sans-serif;
+  color: #fff;
+  display: inline-block;
+  font-weight: 100;
+  text-align: center;
+  font-size: 30px;
+}
+
+.countdown-number {
+	    background: rgb(245, 202, 22);
+    margin: 5px;
+  padding: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.countdown-time {
+	background: #000000;
+  padding: 15px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.countdown-text {
+    display: block;
+    color: black;
+    padding-top: 5px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+
+.more{
+	
+	    text-align: center;
+}
+.more button {
+    /* text-align: center; */
+    width: 160px;
+    height: 77px;
+    padding: 11px;
+    margin: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border: white 1px solid;
+    background: transparent;
+}
+.more button:hover{
+    /* text-align: center; */
+     width: 160px;
+    height: 77px;
+    padding: 11px;
+    margin: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    border: #000 1px solid;
+    background: #fff;
+}
+
+.all{
+	    margin: 20px 0;
+	display: flex;
+	justify-content:space-between;
+	color: white;
+
+}
+
+.btn-secondary:hover {
+    color: #fff;
+    background-color: #5a6268;
+    border:none;
+}
+.btn {
+    background: #f4f6fb;
+    background: var(--second-color);
+    color: #000;
+    text-decoration: none;
+    border-radius: 30px;
+    padding: 0!important;
+    line-height: 1;
+    display: inline-block;
+    font-weight: 700!important;
+    font-size: 20px;
+    transition: background .4s ease, color .4s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
+    color: #fff;
+    background-color: transparent;
+    border-color: transparent!important;
+}
+.search{
+    width: 50vw!important;
+    background: transparent;
+    color: white;
+    border-radius: 30px!important;
+    border: white solid 2px;
+}
+.ss{
+	
+    height: 40px;
+    width: 106px;
+    color: black!important;
+    background: #ffe810!important;
+    position: absolute!important;
+    /* float: right; */
+    right: 0;
+
+}
+.f-s{
+	
+    position: relative;
+
+}
+.dropdown-item {
+
+    color: #212529!important;
+  
+}
+.dropdown-item:hover {
+
+    color: #212529!important;
+  
+}
