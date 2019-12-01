@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +24,7 @@ namespace ChelHackApi.Controllers
         public async Task<List<Good>> Goods([FromQuery] PagedFilter filter)
         {
             var filterDefinition = FilterDefinition<BsonDocument>.Empty;
-            var sortDefinition = Builders<BsonDocument>.Sort.Ascending(filter.SortField);
+            var sortDefinition = Builders<BsonDocument>.Sort.Ascending(filter.SortField ?? "Price");
             
             if (!string.IsNullOrEmpty(filter.TextFilter))
             {
@@ -51,7 +50,8 @@ namespace ChelHackApi.Controllers
         [HttpGet("{id:long:min(1)}")]
         public async Task<Good> Good(long id)
         {
-            return TestGoods.List.FirstOrDefault(x => x.Id == id);
+            return await _goodsCollection.Find(Builders<BsonDocument>.Filter.Eq(x => x["_id"], id))
+                .Project(x => BsonSerializer.Deserialize<Good>(x, null)).FirstOrDefaultAsync();
         }
     }
 }
