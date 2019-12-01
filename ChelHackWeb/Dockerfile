@@ -11,7 +11,15 @@ COPY . .
 WORKDIR /src/ChelHackWeb
 RUN dotnet build ChelHackWeb.csproj -c Release -o /app
 
+FROM node:10-alpine as npm
+ARG VERSION
+WORKDIR /src
+COPY --from=build "/ChelHackWeb/App" .
+RUN npm install && npm run build
+
 FROM build AS publish
+WORKDIR /src/ChelHackWeb
+COPY --from=npm "/src/dist" "App/dist"
 RUN dotnet publish ChelHackWeb.csproj -c Release -o /app
 
 FROM base AS final

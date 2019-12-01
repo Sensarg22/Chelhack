@@ -20,6 +20,8 @@ services:
       - ConnectionStrings__GoodsDatabase=mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop
     volumes:
       - images:/app/images
+    environment:
+      - ImagesDirectory=/app/images
     networks:
       - chelhack-net
     deploy:

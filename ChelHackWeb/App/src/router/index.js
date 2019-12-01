@@ -8,17 +8,17 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/black-friday/',
     name: 'home',
     component: Home
   },
   {
-    path: '/Product/:id',
+    path: '/black-friday/Product/:id',
     name: 'Product',
     component: Product
   },
   {
-    path: '/ShopBasket',
+    path: '/black-friday/ShopBasket',
     name: 'ShopBasket',
     component: ShopBasket
   },

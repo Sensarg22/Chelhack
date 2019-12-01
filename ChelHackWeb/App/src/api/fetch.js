@@ -1,6 +1,10 @@
 import axios from 'axios'
 const service = axios.create({
-    baseURL: (window.location.host === 'localhost:8080') ? 'http://localhost:5000' : window.location.origin,
+    baseURL: (window.location.host === 'localhost:8080')
+        ? 'http://localhost:5000'
+        : 'http://10.100.67.112:81'
+        //: 'https://localhost:44397'
+    ,
 })
 service.interceptors.request.use(function (config) {
     return config
