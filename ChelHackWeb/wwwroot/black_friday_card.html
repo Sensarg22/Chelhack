@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/46e6a78430.js" crossorigin="anonymous"></script>
+
+	  <link rel="stylesheet" href="css/card.css">
+
+	
+</head>
+<body>
+	<section id="card">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="img_box">
+		<!-- 	<img src="img/photos/1.jpg" class="img_card_item" alt="img"> -->
+			</div>
+			</div>
+			<div class="col-md-6">
+				<div class="box_text_card">
+					<h4 id="card">Название товара</h4>
+					<p id="dicr">Категория</p>
+					<span  class="old_price "><span class="d24"></span> </span>
+
+					<p id="discount_price">выгода 2000Руб!</p>
+
+				<div class="box-main-price">
+					<a href="#" id="main_price">3999Руб</a>
+					</div>
+				</div>
+			</div>
+
+			
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-md-12">
+				<div class="box_charact">
+					
+
+				<div class="list-group">
+				  <div class=" head_charact list-group-item active">
+				    Характеристики 
+				  </div><div id="body_params"></div>
+				  <!-- <div class="list-group-item list-group-item-action">
+				  	<div class="row">
+				  		<div class="title col-md-4 border-right">Цена:</div>
+				  		<div class="col-md-8">3999руб</div>
+				  	</div>
+				  </div> -->
+
+				  
+
+				  
+			
+				</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	</section>
+
+	<section >
+		<div class="container "> <div class="row " id="catalog">
+
+
+
+		</div>
+	</div>
+		
+	</section>
+	<script src="js/main.js"></script>
+
+<!-- <script type="text/javascript">
+	urlParams = new URLSearchParams(window.location.search);
+params = {};
+
+urlParams.forEach((p, key) => {
+  params[key] = p;
+
+var urlProj = 'test.json';
+    var getProjects = $.ajax({
+        url: urlProj,
+        type: 'GET',
+        dataType: 'json',
+        success:function(data) {
+            for (var i=0; i<=data.length-1; i++) {
+                var project = data[p];
+                  
+			//console.log(project.price)
+					  var priceold=p.price;;
+                      var pricemain=p.finalPrice
+                  	  var title=p.title;
+                  	 
+
+                      $( "#catalog" ).append( ' <div class="col-md-4 ">" <div class="card" style="width: 18rem; "> <div class="card-body"> <h5 class="card-title">'+title+'</h5> <p class="card-text">Brand </p> </div> <div class="pr"> <p class="old-p"> '+priceold+'</p> <div class="new-p"> <div class="box-main-price"> <a href="#" id="main_price" class="main_price_item">'+pricemain+'Руб</a></div></div> </div> </div> </div> </div> </div>  ');
+
+            }
+        }
+    });
+});
+</script> -->
+
+	 
+</body>
+</html>

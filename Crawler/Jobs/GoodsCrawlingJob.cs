@@ -21,6 +21,8 @@ namespace Crawler.Jobs
         private readonly IConfiguration _configuration;
         private readonly JsonStreamHttpClient _streamHttpClient;
         private readonly IMongoCollection<Good> _goodsCollection;
+        private readonly IMongoCollection<Brand> _brandsCollection;
+        private readonly IMongoCollection<Category> _categoriesCollection;
         
         private const int ChunkSize = 5;
 
@@ -31,6 +33,8 @@ namespace Crawler.Jobs
             _configuration = configuration;
             _streamHttpClient = streamHttpClient;
             _goodsCollection = database.GetCollection<Good>(nameof(Good));
+            _brandsCollection = database.GetCollection<Brand>(nameof(Brand));
+            _categoriesCollection = database.GetCollection<Category>(nameof(Category));
         }
         
         public async Task Execute(IJobExecutionContext context)
@@ -48,6 +52,7 @@ namespace Crawler.Jobs
 
                 var toInsert = new List<Good>();
                 var toUpdate = new List<Good>();
+                
                 foreach (var good in goods)
                 {
                     CalculateHash(good);
@@ -75,6 +80,9 @@ namespace Crawler.Jobs
                     await InsertGoodsAsync(toInsert);
                     await DownloadPictures(toInsert.Select(x => x.ImageUrl).ToList());
                 }
+
+                await UpdateBrands(goods);
+                await UpdateCategories(goods);
                 
                 await DeleteNonExistingGoods(actualIds);
             }
@@ -145,6 +153,49 @@ namespace Crawler.Jobs
         private async Task InsertGoodsAsync(IReadOnlyCollection<Good> items)
         {
             await _goodsCollection.InsertManyAsync(items);
+        }
+
+        private async Task UpdateBrands(IReadOnlyList<Good> items)
+        {
+            var writeOptions = new BulkWriteOptions
+            {
+                IsOrdered = true
+            };
+            var brandOperations = new List<ReplaceOneModel<Brand>>();
+            brandOperations.AddRange(items.Select(x => new ReplaceOneModel<Brand>(Builders<Brand>.Filter.Eq(y => y.Name, x.Brand),
+                new Brand
+                {
+                    Id = x.BrandId,
+                    Name = x.Brand
+                })
+            {
+                IsUpsert = true
+            }));
+            if (brandOperations.Any())
+            {
+                await _brandsCollection.BulkWriteAsync(brandOperations, writeOptions);
+            }
+        }
+        
+        private async Task UpdateCategories(IReadOnlyList<Good> items)
+        {
+            var writeOptions = new BulkWriteOptions
+            {
+                IsOrdered = true
+            };
+            var brandOperations = new List<ReplaceOneModel<Category>>();
+            brandOperations.AddRange(items.Select(x => new ReplaceOneModel<Category>(Builders<Category>.Filter.Eq(y => y.Name, x.Category),
+                new Category
+                {
+                    Name = x.Category
+                })
+            {
+                IsUpsert = true
+            }));
+            if (brandOperations.Any())
+            {
+                await _categoriesCollection.BulkWriteAsync(brandOperations, writeOptions);
+            }
         }
 
         private async Task UpdateGoodsAsync(IReadOnlyList<Good> items)
