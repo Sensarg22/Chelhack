@@ -15,9 +15,9 @@ volumes:
 
 services:
   crawler:
-    container_name: chelhack_crawler
     image: ${DOCKER_REGISTRY-}crawler
-    restart: always
+    environment:
+      - ConnectionStrings__GoodsDatabase="mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
     volumes:
       - images:/app/images
     networks:
@@ -42,7 +42,7 @@ services:
     deploy:
       replicas: 3
       restart_policy:
-        condition: on-failure
+        condition: any
 
   chalhackapi:
     container_name: chelhack_api
@@ -50,11 +50,24 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTPS_PORT=4431
+      - ConnectionStrings__GoodsDatabase="mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
     ports:
       - "81:80"
     networks:
       - chelhack-net
     deploy:
-      replicas: 2
+      replicas: 3
       restart_policy:
-        condition: on-failure
+        condition: any
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_DATABASE: eshop
+      MONGO_INITDB_ROOT_USERNAME: chelhack
+      MONGO_INITDB_ROOT_PASSWORD: chelhackmegapass2019
+    volumes:
+      - dbdata:/data/db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any

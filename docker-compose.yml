@@ -17,6 +17,8 @@ services:
   crawler:
     container_name: chelhack_crawler
     image: ${DOCKER_REGISTRY-}crawler
+    environment:
+      - ConnectionStrings__GoodsDatabase="mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
     build:
       context: .
       dockerfile: Crawler/Dockerfile
@@ -40,9 +42,21 @@ services:
   chalhackapi:
     container_name: chelhack_api
     image: ${DOCKER_REGISTRY-}chelhackapi
+    environment:
+      - ConnectionStrings__GoodsDatabase="mongodb://chelhack:chelhackmegapass2019@mongo:27017/eshop?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
     build:
       context: .
       dockerfile: ChelHackApi/Dockerfile
     networks:
       - chelhack-net
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: eshop
+      MONGO_INITDB_ROOT_USERNAME: chelhack
+      MONGO_INITDB_ROOT_PASSWORD: chelhackmegapass2019
+    volumes:
+      - dbdata:/data/db
 
