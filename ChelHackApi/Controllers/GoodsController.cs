@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Common;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -21,7 +22,7 @@ namespace ChelHackApi.Controllers
         }
         
         [HttpGet("")]
-        public async Task<List<Good>> Goods([FromQuery] PagedFilter filter)
+        public async Task<PagedList<Good>> Goods([FromQuery] PagedFilter filter)
         {
             var filterDefinition = FilterDefinition<BsonDocument>.Empty;
             var sortDefinition = Builders<BsonDocument>.Sort.Ascending(filter.SortField ?? "Price");
@@ -48,13 +49,23 @@ namespace ChelHackApi.Controllers
                     sortDefinition = Builders<BsonDocument>.Sort.Descending(filter.SortField);
                 }
             }
-            
-            return await _goodsCollection.Find(filterDefinition)
+
+            var query = _goodsCollection.Find(filterDefinition);
+            var count = await query.CountDocumentsAsync();
+            var elements = await query
                 .Sort(sortDefinition)
                 .Skip(filter.PageSize * (filter.Page - 1))
                 .Limit(filter.PageSize)
                 .Project(x => BsonSerializer.Deserialize<Good>(x, null))
                 .ToListAsync();
+            
+            return new PagedList<Good>
+            {
+                Items = elements,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Total = count
+            };
         }
         
         [HttpGet("{id:long:min(1)}")]
