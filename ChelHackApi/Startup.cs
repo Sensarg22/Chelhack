@@ -32,6 +32,9 @@ namespace ChelHackApi
 
             ConfigureApiBehavior(services);
 
+            services.AddResponseCaching();
+            services.AddResponseCompression();
+
             services.AddTransient(serviceProvider =>
             {
                 var configuration = serviceProvider.GetService<IConfiguration>();

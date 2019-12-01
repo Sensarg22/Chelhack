@@ -54,9 +54,9 @@ services:
     image: mongo
     restart: always
     environment:
-      MONGO_INITDB_DATABASE: goods
+      MONGO_INITDB_DATABASE: eshop
       MONGO_INITDB_ROOT_USERNAME: chelhack
       MONGO_INITDB_ROOT_PASSWORD: chelhackmegapass2019
     volumes:
-      - dbdata::/data/db
+      - dbdata:/data/db
 
