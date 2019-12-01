@@ -7,7 +7,7 @@
                 <el-table-column
                         prop="title"
                         label="Изображение"
-                        width="120"
+                        width="140"
                 >
                     <template slot-scope="scope">
                         <span style="margin-left: 10px">{{ scope.row.date }}</span>
@@ -41,7 +41,7 @@
                 <el-table-column
                         prop="title"
                         label="Удалить"
-                        width="80"
+                        width="100"
                 >
                     <template slot-scope="scope">
                         <el-button type="danger" icon="el-icon-delete" circle
