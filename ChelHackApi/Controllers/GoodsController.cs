@@ -31,6 +31,16 @@ namespace ChelHackApi.Controllers
                 filterDefinition = Builders<BsonDocument>.Filter.Text(filter.TextFilter);
             }
 
+            if (!string.IsNullOrEmpty(filter.Brand))
+            {
+                filterDefinition &= Builders<BsonDocument>.Filter.Eq(x => x["Brand"],filter.Brand);
+            }
+            
+            if (!string.IsNullOrEmpty(filter.Category))
+            {
+                filterDefinition &= Builders<BsonDocument>.Filter.Eq(x => x["Category"],filter.Category);
+            }
+
             if (!string.IsNullOrEmpty(filter.SortField))
             {
                 if (filter.SortOrder == "desc")
