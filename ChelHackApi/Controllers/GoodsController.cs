@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace ChelHackApi.Controllers
@@ -11,26 +13,39 @@ namespace ChelHackApi.Controllers
     public class GoodsController : Controller
     {
         private readonly IMongoDatabase _mongoDatabase;
+        private IMongoCollection<BsonDocument> _goodsCollection;
 
         public GoodsController(IMongoDatabase mongoDatabase)
         {
             _mongoDatabase = mongoDatabase;
+            _goodsCollection = _mongoDatabase.GetCollection<BsonDocument>(nameof(Good));
         }
         
         [HttpGet("")]
         public async Task<List<Good>> Goods([FromQuery] PagedFilter filter)
         {
-            var collection = _mongoDatabase.GetCollection<Good>(nameof(Good));
-            var filterDefinition = FilterDefinition<Good>.Empty;
+            var filterDefinition = FilterDefinition<BsonDocument>.Empty;
+            var sortDefinition = Builders<BsonDocument>.Sort.Ascending(filter.SortField);
             
             if (!string.IsNullOrEmpty(filter.TextFilter))
             {
-                filterDefinition = Builders<Good>.Filter.Text(filter.TextFilter);
+                filterDefinition = Builders<BsonDocument>.Filter.Text(filter.TextFilter);
+            }
+
+            if (!string.IsNullOrEmpty(filter.SortField))
+            {
+                if (filter.SortOrder == "desc")
+                {
+                    sortDefinition = Builders<BsonDocument>.Sort.Descending(filter.SortField);
+                }
             }
             
-            return await collection.Find(filterDefinition)
+            return await _goodsCollection.Find(filterDefinition)
+                .Sort(sortDefinition)
                 .Skip(filter.PageSize * (filter.Page - 1))
-                .Limit(filter.PageSize).ToListAsync();
+                .Limit(filter.PageSize)
+                .Project(x => BsonSerializer.Deserialize<Good>(x, null))
+                .ToListAsync();
         }
         
         [HttpGet("{id:long:min(1)}")]
