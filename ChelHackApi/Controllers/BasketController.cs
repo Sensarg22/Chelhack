@@ -21,7 +21,7 @@ namespace ChelHackApi.Controllers
         }
         
         [HttpPost("submit")]
-        public async Task<IActionResult> Submit(BasketModel model)
+        public async Task<IActionResult> Submit([FromBody]BasketModel model)
         {
             model.Id = ObjectId.GenerateNewId();
             model.Added = DateTime.UtcNow;
