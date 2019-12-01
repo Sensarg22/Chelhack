@@ -33,6 +33,10 @@ namespace ChelHackWeb
 
             services.AddResponseCompression();
             services.AddResponseCaching();
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "App/dist";
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -54,9 +58,17 @@ namespace ChelHackWeb
             //app.UseHttpsRedirection();
             app.UseResponseCaching();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
             //app.UseCookiePolicy();
 
             app.UseMvc();
+
+            app.Map("/black-friday",
+                builder =>
+                {
+                    builder.UseSpa(spa => { spa.Options.SourcePath = "/App"; }); 
+
+                });
         }
     }
 }
