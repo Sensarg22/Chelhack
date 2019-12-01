@@ -263,3 +263,5 @@ __pycache__/
 
 **/*.Development.json
 *.Development.json
+/ChelHackWeb/images
+*.DS_Store

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,7 +34,14 @@ namespace ChelHackApi
             {
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var connectionString = new ConnectionString(configuration.GetConnectionString("GoodsDatabase"));
-                return new MongoClient(connectionString.ToString()).GetDatabase(connectionString.DatabaseName);
+                var database = new MongoClient(connectionString.ToString()).GetDatabase(connectionString.DatabaseName);
+                
+                database.GetCollection<Good>(nameof(Good)).Indexes.CreateOne(new CreateIndexModel<Good>(Builders<Good>.IndexKeys
+                    .Text(x => x.Title)
+                    .Text(x => x.Brand)
+                    .Text(x => x.Category)));
+                
+                return database;
             });
         }
 
