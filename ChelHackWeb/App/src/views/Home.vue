@@ -79,7 +79,7 @@
                 </div>
                 <div class="aside__nav">
                     <ul>
-                        <li v-for="item in brands">{{item}}</li>
+                        <li v-for="item in brands" @click="getGoods(item)" style="cursor: pointer">{{item}}</li>
                     </ul>
                 </div>
                 <!--<div class="aside__subtitle">
@@ -296,7 +296,9 @@
                         pageSize: 5,
                         sortField: '',
                         sortOrder: '',
-                        textFilter: ''
+                        textFilter: '',
+                        category: '',
+                        brand: ''
                     }
                 }
         },
@@ -346,6 +348,16 @@
                     this.list = res.items
                     this.form.page = res.page
                     this.total = res.total
+                    this.loading = false
+                }).catch(() => {
+                    this.loading = false
+                })
+            },
+            getGoods(brand) {
+                this.loading = true
+                this.form.brand = brand
+                Api.getGoods(this.form).then(res => {
+                    this.list = res.items
                     this.loading = false
                 }).catch(() => {
                     this.loading = false
