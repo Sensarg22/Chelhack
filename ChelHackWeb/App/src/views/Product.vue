@@ -35,7 +35,7 @@
                     <router-link :to="{name: 'ShopBasket'}"></router-link>
                 </div>
                 <hr>
-                <div w v-for="item in data.parameters">
+                <div v-for="item in data.parameters">
                     <el-row :gutter="20">
                         <el-col :span="12" align="left">
                             {{item.title}}
@@ -50,7 +50,6 @@
             </el-col>
         </el-row>
         </el-main>
-
     </div>
 </template>
 <script>
